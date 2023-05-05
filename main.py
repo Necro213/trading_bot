@@ -258,5 +258,5 @@ class BotController:
 
 
 botc = BotController()
-#botc.init_thread()
-botc.check_operations()
+botc.init_thread()
+#botc.check_operations()
