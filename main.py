@@ -44,7 +44,7 @@ class BotController:
 
     def check_operations(self):
         while True:
-            print("check_operations")
+            #print("check_operations")
             positions = mt5.positions_get(symbol=self.symbol)
             if len(positions) > 0:
                 for item in positions:
@@ -53,7 +53,7 @@ class BotController:
                     profit = order["profit"]
                     volume = order["volume"]
                     type = order["type"]
-                    print(type)
+                    #print(type)
                     if profit > 0.04 and volume == 0.01:
                         print("close order")
                         mt5.Close(ticket=ticket, symbol=self.symbol)
@@ -82,13 +82,13 @@ class BotController:
                 max_func = price
                 dif = price - min_func
                 change = "up"
-                print(change)
+                #print(change)
 
             if price < min_func:
                 min_func = price
                 dif = max_func - price
                 change = "down"
-                print(change)
+                #print(change)
 
             if change == "up" and not self.active:
                 new_dif = price - min_func
@@ -198,17 +198,17 @@ class BotController:
                     positions_count = positions_count+1;
             if price > self.max:
                 self.max = price
-                print("new max price " + str(self.max))
+                #print("new max price " + str(self.max))
 
             if price < self.min:
                 self.min = price
-                print("new min price " + str(self.min))
+                #print("new min price " + str(self.min))
 
-            print(self.max, price, self.min)
+            #print(self.max, price, self.min)
             limits = self.generate_limits(self.max, self.min)
-            print(limits["limite_superior"], price, limits["limite_inferior"])
+            #print(limits["limite_superior"], price, limits["limite_inferior"])
             if positions_count > 5:
-                print("max positions")
+                #print("max positions")
                 time.sleep(30)
                 continue
             print(ten)
