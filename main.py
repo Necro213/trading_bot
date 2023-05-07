@@ -65,13 +65,13 @@ class BotController:
                     volume = order["volume"]
                     type = order["type"]
                     if volume == self.min_vol and (profit > self.profit_min_vol or profit < self.lost_min_vol):
-                        print("close order")
+                        print("close min vol order with profit "+str(profit))
                         mt5.Close(ticket=ticket, symbol=self.symbol)
                     elif volume == self.max_vol and (profit > self.profit_max_vol or profit < self.lost_max_vol):
-                        print("close order")
+                        print("close max vol order with profit "+str(profit))
                         mt5.Close(ticket=ticket, symbol=self.symbol)
                     elif self.active and volume == self.min_vol and type == self.order:
-                        print("close order")
+                        print("close order for hook")
                         mt5.Close(ticket=ticket, symbol=self.symbol)
             time.sleep(self.period_trasher)
 
@@ -186,7 +186,7 @@ class BotController:
             for item in positions:
                 order = item._asdict()
                 volume = order["volume"]
-                if volume == 0.01:
+                if volume == self.min_vol:
                     positions_count = positions_count + 1;
             if price > self.max:
                 self.max = price
@@ -235,8 +235,8 @@ botc = BotController(
     max_vol=0.1,
     profit_min_vol=0.01,
     profit_max_vol=1,
-    lost_min_vol=1,
-    lost_max_vol=9,
+    lost_min_vol=-1,
+    lost_max_vol=-9,
     symbol="USDCAD",
     period_trading=60,
     period_trasher=5
