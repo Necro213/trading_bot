@@ -140,6 +140,18 @@ class BotController:
 
             time.sleep(self.period_trading)
 
+    def detect_cross(self):
+        price = mt5.symbol_info_tick(self.symbol).ask
+        local_cross_direction = self.cross_direction
+        self.cross_direction = self.settings.detect_cross_medias()
+        if local_cross_direction == "cross_up" and self.cross_direction == "cross_down":
+            self.cross_direction = None
+            self.create_order(mt5.ORDER_TYPE_SELL, price, self.max_vol)
+        elif local_cross_direction == "cross_down" and self.cross_direction == "cross_up":
+            self.cross_direction = None
+            self.create_order(mt5.ORDER_TYPE_BUY, price, self.max_vol)
+        time.sleep(1)
+
     def init_thread(self):
         operations = threading.Thread(target=self.check_operations)
         detect_hook = threading.Thread(target=self.detect_hook)
@@ -147,6 +159,9 @@ class BotController:
         operations.start()
         detect_hook.start()
         trading.start()
+        time.sleep(10)
+        detect_cross = threading.Thread(target=self.detect_cross)
+        detect_cross.start()
 
     def trading_bot(self):
         while True:
@@ -161,25 +176,12 @@ class BotController:
                 self.max = price
                 self.min = price
 
-            local_cross_direction = self.cross_direction
-            self.cross_direction = self.settings.detect_cross_medias()
-
             if len(self.prices) > 20:
                 self.prices.pop(0)
                 self.prices.append(price)
             else:
                 self.prices.append(price)
 
-            if local_cross_direction == "cross_up" and self.cross_direction == "cross_down":
-                self.cross_direction = None
-                self.create_order(mt5.ORDER_TYPE_SELL, price, self.max_vol)
-                self.min = price
-                self.max = price
-            elif local_cross_direction == "cross_down" and self.cross_direction == "cross_up":
-                self.cross_direction = None
-                self.create_order(mt5.ORDER_TYPE_BUY, price, self.max_vol)
-                self.min = price
-                self.max = price
             ten = self.tendencia(self.prices)
             positions = mt5.positions_get(symbol=self.symbol)
             positions_count = 0

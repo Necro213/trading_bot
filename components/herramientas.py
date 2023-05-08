@@ -37,6 +37,8 @@ class Herramientas:
         for item in data:
             price = item[4]
             prices.append(price)
+
+        prices.append(mt5.symbol_info_tick(self.symbol).ask)
         prices.reverse()
         ema = 0
         for item in prices:
@@ -82,8 +84,8 @@ class Herramientas:
             return "cross_down"
 
     def detect_cross_medias(self):
-        ema_20 = self.adaptative_moving_average(20)
-        ema_5 = self.adaptative_moving_average(5)
+        ema_20 = self.adaptative_moving_average(19)
+        ema_5 = self.adaptative_moving_average(4)
         if ema_5 > ema_20:
             return "cross_up"
         elif ema_5 < ema_20:
