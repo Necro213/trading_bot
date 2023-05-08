@@ -162,11 +162,11 @@ class BotController:
                 self.min = price
 
             local_cross_direction = self.cross_direction
+            self.cross_direction = self.settings.detect_cross_medias()
 
             if len(self.prices) > 20:
                 self.prices.pop(0)
                 self.prices.append(price)
-                self.cross_direction = self.settings.detect_cross_medias()
             else:
                 self.prices.append(price)
 
@@ -238,8 +238,8 @@ botc = BotController(
     lost_min_vol=-1,
     lost_max_vol=-9,
     symbol="USDCAD",
-    period_trading=60,
-    period_trasher=5
+    period_trading=30,
+    period_trasher=3
 )
 botc.init_thread()
 # botc.check_operations()
