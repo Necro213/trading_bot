@@ -160,9 +160,11 @@ class BotController:
         operations.start()
         detect_hook.start()
         trading.start()
+        """
         time.sleep(10)
         detect_cross = threading.Thread(target=self.detect_cross)
         detect_cross.start()
+        """
 
     def trading_bot(self):
         while True:
@@ -201,15 +203,15 @@ class BotController:
             if positions_count > 5:
                 time.sleep(self.period_trading)
                 continue
-
-            if ten == "up" and limits["limite_superior"] > price:
+            open_price = mt5.symbol_info_tick(self.symbol).bid
+            if ten == "up" and limits["limite_superior"] > price > open_price:
                 print("create buy order")
-                self.create_order(mt5.ORDER_TYPE_BUY, price, 0.01)
+                self.create_order(mt5.ORDER_TYPE_BUY, price, self.min_vol)
                 self.max = price
                 self.min = price
-            elif ten == "down" and limits["limite_inferior"] < price:
+            elif ten == "down" and limits["limite_inferior"] < price < open_price:
                 print("create sell order")
-                self.create_order(mt5.ORDER_TYPE_SELL, price, 0.01)
+                self.create_order(mt5.ORDER_TYPE_SELL, price, self.min_vol)
                 self.max = price
                 self.min = price
 
@@ -234,14 +236,14 @@ class BotController:
 
 
 botc = BotController(
-    min_vol=0.01,
+    min_vol=0.02,
     max_vol=0.1,
-    profit_min_vol=0.01,
+    profit_min_vol=0.05,
     profit_max_vol=1,
     lost_min_vol=-1,
     lost_max_vol=-9,
     symbol="USDCAD",
-    period_trading=30,
+    period_trading=60,
     period_trasher=3
 )
 botc.init_thread()
