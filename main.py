@@ -100,7 +100,7 @@ class BotController:
                 resta = dif - new_dif
                 if resta < 0:
                     resta = resta * (-1)
-                if resta > 0.001:
+                if resta > 40:
                     print("super up")
                     self.order = 1
                     self.active = True
@@ -109,14 +109,14 @@ class BotController:
                 resta = dif - new_dif
                 if resta < 0:
                     resta = resta * (-1)
-                if resta > 0.001:
+                if resta > 40:
                     print("super down")
                     self.order = 0
                     self.active = True
 
             if self.active:
                 if change == "up":
-                    limit = max_func - 0.001
+                    limit = max_func - 15
 
                     if price < limit:
                         print("up -> down")
@@ -128,7 +128,7 @@ class BotController:
                         self.min = price
 
                 elif change == "down":
-                    limit = min_func + 0.001
+                    limit = min_func + 15
                     if price > limit:
                         print("down -> up")
                         self.create_order(mt5.ORDER_TYPE_BUY, price, self.max_vol)
@@ -143,13 +143,19 @@ class BotController:
     def detect_cross(self):
         while True:
             price = mt5.symbol_info_tick(self.symbol).ask
+
             local_cross_direction = self.cross_direction
-            self.cross_direction = self.settings.detect_cross_medias()
+            if self.settings.detect_cross_medias(price) == "no_cross":
+                time.sleep(1)
+                continue
+            self.cross_direction = self.settings.detect_cross_medias(price)
             if local_cross_direction == "cross_up" and self.cross_direction == "cross_down":
                 self.cross_direction = None
+                print("cross sell order")
                 self.create_order(mt5.ORDER_TYPE_SELL, price, self.max_vol)
             elif local_cross_direction == "cross_down" and self.cross_direction == "cross_up":
                 self.cross_direction = None
+                print("cross buy order")
                 self.create_order(mt5.ORDER_TYPE_BUY, price, self.max_vol)
             time.sleep(1)
 
@@ -160,11 +166,11 @@ class BotController:
         operations.start()
         detect_hook.start()
         trading.start()
-        """
+
         time.sleep(10)
         detect_cross = threading.Thread(target=self.detect_cross)
         detect_cross.start()
-        """
+
 
     def trading_bot(self):
         while True:
@@ -176,8 +182,8 @@ class BotController:
 
             if self.count == 60:
                 self.count = 0
-                self.max = price
-                self.min = price
+                #self.max = price
+                #self.min = price
 
             if len(self.prices) > 20:
                 self.prices.pop(0)
@@ -192,7 +198,7 @@ class BotController:
                 order = item._asdict()
                 volume = order["volume"]
                 if volume == self.min_vol:
-                    positions_count = positions_count + 1;
+                    positions_count = positions_count + 1
             if price > self.max:
                 self.max = price
 
@@ -236,13 +242,13 @@ class BotController:
 
 
 botc = BotController(
-    min_vol=0.02,
-    max_vol=0.1,
+    min_vol=0.01,
+    max_vol=0.05,
     profit_min_vol=0.05,
     profit_max_vol=1,
     lost_min_vol=-1,
-    lost_max_vol=-9,
-    symbol="USDCAD",
+    lost_max_vol=-2,
+    symbol="BTCUSD",
     period_trading=60,
     period_trasher=3
 )

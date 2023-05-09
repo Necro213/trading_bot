@@ -13,6 +13,7 @@ class Herramientas:
     def get_data(self, limit=1000):
         self.data = mt5.copy_rates_from_pos(self.symbol, mt5.TIMEFRAME_M1, 0, limit)
         return self.data
+
     def simulate_prices_from_data(self):
         self.get_data()
         prices = []
@@ -45,7 +46,7 @@ class Herramientas:
             ema = ema + item
         ema = ema / len(prices)
 
-        print(ema)
+        # print(ema)
         return ema
 
     def adaptative_moving_average_temp(self, prices):
@@ -83,10 +84,11 @@ class Herramientas:
         elif ema_9 < ema_35 - 0.0002:
             return "cross_down"
 
-    def detect_cross_medias(self):
+    def detect_cross_medias(self, price):
         ema_20 = self.adaptative_moving_average(19)
-        ema_5 = self.adaptative_moving_average(4)
-        if ema_5 > ema_20:
+
+        if price > ema_20 + 10:
             return "cross_up"
-        elif ema_5 < ema_20:
+        elif price < ema_20 - 10:
             return "cross_down"
+        return "no_cross"
