@@ -92,3 +92,27 @@ class Herramientas:
         elif price < ema_20 - 10:
             return "cross_down"
         return "no_cross"
+
+    def can_buy(self):
+        price = mt5.symbol_info_tick(self.symbol).ask
+        price_open = mt5.symbol_info_tick(self.symbol).bid
+
+        last_tick = mt5.copy_rates_from_pos(self.symbol, mt5.TIMEFRAME_M1, 0, 1)
+        last_tick_open = last_tick[0][1]
+        last_tick_close = last_tick[0][4]
+
+        if (last_tick_close > last_tick_open) and (price > price_open):
+            return True
+        return False
+
+    def can_sell(self):
+        price = mt5.symbol_info_tick(self.symbol).ask
+        price_open = mt5.symbol_info_tick(self.symbol).bid
+
+        last_tick = mt5.copy_rates_from_pos(self.symbol, mt5.TIMEFRAME_M1, 0, 1)
+        last_tick_open = last_tick[0][1]
+        last_tick_close = last_tick[0][4]
+
+        if (last_tick_close < last_tick_open) and (price < price_open):
+            return True
+        return False

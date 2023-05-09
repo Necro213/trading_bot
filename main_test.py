@@ -251,12 +251,12 @@ class BotControllerTest:
             writer = csv.writer(file)
             writer.writerow(order.values())
 
-botc = BotControllerTest()
-botc.init_thread()
+#botc = BotControllerTest()
+#botc.init_thread()
 #botc.check_operations()
 
-#settings = Herramientas()
-
+settings = Herramientas()
+settings.can_buy()
 #settings.simulate_prices_from_data()
 
 """settings.calcule_profit(
