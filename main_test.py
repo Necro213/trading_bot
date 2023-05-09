@@ -42,8 +42,8 @@ class BotControllerTest:
         limite_inf = (media + min) / 2
 
         return {
-            "limite_superior": limite_sup,
-            "limite_inferior": limite_inf
+            "limite_superior": media,
+            "limite_inferior": media
         }
 
     def check_operations(self):
@@ -75,7 +75,7 @@ class BotControllerTest:
                         order["profit"] = profit
                         self.closed_operations.append(order)
                         self.add_row_to_csv(order)
-                    elif float(profit) < -8 and (float(volume) == 0.1 or float(volume) == 0.2):
+                    elif float(profit) < -4 and (float(volume) == 0.1 or float(volume) == 0.2):
                         print("close negative super order")
                         self.settings.close_position(order)
                         order["profit"] = profit
@@ -196,10 +196,10 @@ class BotControllerTest:
 
             if self.cross_direction != local_cross_direction:
                 if self.cross_direction == "cross_up":
-                    self.settings.create_position(mt5.ORDER_TYPE_BUY, 0.2, price)
+                    #self.settings.create_position(mt5.ORDER_TYPE_BUY, 0.1, price)
                     print("cross up")
                 elif self.cross_direction == "cross_down":
-                    self.settings.create_position(mt5.ORDER_TYPE_SELL, 0.2, price)
+                    #self.settings.create_position(mt5.ORDER_TYPE_SELL, 0.1, price)
                     print("cross down")
             if self.active:
                 self.max = price
