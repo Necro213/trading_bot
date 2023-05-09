@@ -15,7 +15,7 @@ class Herramientas:
         return self.data
 
     def simulate_prices_from_data(self):
-        self.get_data()
+        self.get_data(600)
         prices = []
         for item in self.data:
             self.actual_price = item[4]
@@ -76,12 +76,12 @@ class Herramientas:
                 del self.posotions[i]
                 break
 
-    def detect_cross_medias_test(self, prices_35, prices_9):
+    def detect_cross_medias_test(self, prices_35, price):
         ema_35 = self.adaptative_moving_average_temp(prices_35)
-        ema_9 = self.adaptative_moving_average_temp(prices_9)
-        if ema_9 > ema_35 + 0.0002:
+
+        if price > ema_35 + 0.0002:
             return "cross_up"
-        elif ema_9 < ema_35 - 0.0002:
+        elif price < ema_35 - 0.0002:
             return "cross_down"
 
     def detect_cross_medias(self, price):

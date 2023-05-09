@@ -190,7 +190,7 @@ class BotControllerTest:
             if len(self.prices) > 20:
                 self.prices.pop(0)
                 self.prices.append(price)
-                self.cross_direction = self.settings.detect_cross_medias_test(self.prices, self.prices[-5:])
+                self.cross_direction = self.settings.detect_cross_medias_test(self.prices, price)
             else:
                 self.prices.append(price)
 

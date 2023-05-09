@@ -50,8 +50,8 @@ class BotController:
         limite_inf = (media + min) / 2
 
         return {
-            "limite_superior": limite_sup,
-            "limite_inferior": limite_inf
+            "limite_superior": media,
+            "limite_inferior": media
         }
 
     def check_operations(self):
