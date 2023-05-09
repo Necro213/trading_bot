@@ -38,9 +38,9 @@ class BotController:
         dos_ant_prom = prices[-2]
         tres_ant_prom = prices[-1]
 
-        if uno_ant_prom < dos_ant_prom and dos_ant_prom < tres_ant_prom:
+        if uno_ant_prom < dos_ant_prom < tres_ant_prom:
             return "up"
-        elif uno_ant_prom > dos_ant_prom and dos_ant_prom > tres_ant_prom:
+        elif uno_ant_prom > dos_ant_prom > tres_ant_prom:
             return "down"
         return "variable"
 
@@ -120,7 +120,7 @@ class BotController:
 
                     if price < limit:
                         print("up -> down")
-                        self.create_order(mt5.ORDER_TYPE_SELL, price, self.max_vol)
+                        #self.create_order(mt5.ORDER_TYPE_SELL, price, self.max_vol)
                         self.active = False
                         min_func = price
                         max_func = price
@@ -131,7 +131,7 @@ class BotController:
                     limit = min_func + 15
                     if price > limit:
                         print("down -> up")
-                        self.create_order(mt5.ORDER_TYPE_BUY, price, self.max_vol)
+                        #self.create_order(mt5.ORDER_TYPE_BUY, price, self.max_vol)
                         self.active = False
                         min_func = price
                         max_func = price
@@ -249,7 +249,7 @@ botc = BotController(
     lost_min_vol=-1,
     lost_max_vol=-2,
     symbol="BTCUSD",
-    period_trading=60,
+    period_trading=30,
     period_trasher=3
 )
 botc.init_thread()
