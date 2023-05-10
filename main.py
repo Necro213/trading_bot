@@ -2,7 +2,7 @@ import MetaTrader5 as mt5
 import time
 import threading
 from components.herramientas import Herramientas
-
+import csv
 
 class BotController:
 
@@ -67,12 +67,18 @@ class BotController:
                     if volume == (self.min_vol*0.01) and (profit > (self.profit_min_vol*self.min_vol) or profit < (self.lost_min_vol*self.min_vol)):
                         print("close min vol order with profit "+str(profit))
                         mt5.Close(ticket=ticket, symbol=self.symbol)
+                        order["profit"] = profit
+                        self.add_row_to_csv(order)
                     elif volume == self.max_vol and (profit > self.profit_max_vol or profit < self.lost_max_vol):
                         print("close max vol order with profit "+str(profit))
                         mt5.Close(ticket=ticket, symbol=self.symbol)
+                        order["profit"] = profit
+                        self.add_row_to_csv(order)
                     elif self.active and volume == (self.min_vol*0.01) and type == self.order:
                         print("close order for hook")
                         mt5.Close(ticket=ticket, symbol=self.symbol)
+                        order["profit"] = profit
+                        self.add_row_to_csv(order)
             time.sleep(self.period_trasher)
 
     def detect_hook(self):
@@ -239,6 +245,11 @@ class BotController:
             # "type_filling": mt5.ORDER_FILLING_RETURN,
         }
         mt5.order_send(request)
+
+    def add_row_to_csv(self, order):
+        with open('data.csv', 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(order.values())
 
 
 botc = BotController(
