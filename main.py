@@ -64,13 +64,13 @@ class BotController:
                     profit = order["profit"]
                     volume = order["volume"]
                     type = order["type"]
-                    if volume == self.min_vol and (profit > self.profit_min_vol or profit < self.lost_min_vol):
+                    if volume == (self.min_vol*0.01) and (profit > (self.profit_min_vol*self.min_vol) or profit < (self.lost_min_vol*self.min_vol)):
                         print("close min vol order with profit "+str(profit))
                         mt5.Close(ticket=ticket, symbol=self.symbol)
                     elif volume == self.max_vol and (profit > self.profit_max_vol or profit < self.lost_max_vol):
                         print("close max vol order with profit "+str(profit))
                         mt5.Close(ticket=ticket, symbol=self.symbol)
-                    elif self.active and volume == self.min_vol and type == self.order:
+                    elif self.active and volume == (self.min_vol*0.01) and type == self.order:
                         print("close order for hook")
                         mt5.Close(ticket=ticket, symbol=self.symbol)
             time.sleep(self.period_trasher)
@@ -100,7 +100,7 @@ class BotController:
                 resta = dif - new_dif
                 if resta < 0:
                     resta = resta * (-1)
-                if resta > 40:
+                if resta > 0.001:
                     print("super up")
                     self.order = 1
                     self.active = True
@@ -109,14 +109,14 @@ class BotController:
                 resta = dif - new_dif
                 if resta < 0:
                     resta = resta * (-1)
-                if resta > 40:
+                if resta > 0.001:
                     print("super down")
                     self.order = 0
                     self.active = True
 
             if self.active:
                 if change == "up":
-                    limit = max_func - 15
+                    limit = max_func - 0.0008
 
                     if price < limit:
                         print("up -> down")
@@ -128,7 +128,7 @@ class BotController:
                         self.min = price
 
                 elif change == "down":
-                    limit = min_func + 15
+                    limit = min_func + 0.0008
                     if price > limit:
                         print("down -> up")
                         #self.create_order(mt5.ORDER_TYPE_BUY, price, self.max_vol)
@@ -197,7 +197,7 @@ class BotController:
             for item in positions:
                 order = item._asdict()
                 volume = order["volume"]
-                if volume == self.min_vol:
+                if volume == self.min_vol*0.01:
                     positions_count = positions_count + 1
             if price > self.max:
                 self.max = price
@@ -212,12 +212,12 @@ class BotController:
             open_price = mt5.symbol_info_tick(self.symbol).bid
             if ten == "up" and limits["limite_superior"] > price and self.settings.can_buy():
                 print("create buy order")
-                self.create_order(mt5.ORDER_TYPE_BUY, price, self.min_vol)
+                self.create_order(mt5.ORDER_TYPE_BUY, price, self.min_vol*0.01)
                 self.max = price
                 self.min = price
             elif ten == "down" and limits["limite_inferior"] < price and self.settings.can_sell():
                 print("create sell order")
-                self.create_order(mt5.ORDER_TYPE_SELL, price, self.min_vol)
+                self.create_order(mt5.ORDER_TYPE_SELL, price, self.min_vol*0.01)
                 self.max = price
                 self.min = price
 
@@ -242,15 +242,15 @@ class BotController:
 
 
 botc = BotController(
-    min_vol=0.01,
+    min_vol=6,
     max_vol=0.05,
     profit_min_vol=0.05,
     profit_max_vol=1,
     lost_min_vol=-1,
     lost_max_vol=-2,
-    symbol="BTCUSD",
+    symbol="USDCAD",
     period_trading=30,
-    period_trasher=3
+    period_trasher=1
 )
 botc.init_thread()
 # botc.check_operations()

@@ -254,9 +254,11 @@ class BotControllerTest:
 #botc = BotControllerTest()
 #botc.init_thread()
 #botc.check_operations()
+num = 10
 
 settings = Herramientas()
-settings.can_buy()
+print(settings.calcule_profit(mt5.ORDER_TYPE_BUY, "USDCAD", num*0.01, 1.33800, 1.33820))
+print(settings.calcule_profit(mt5.ORDER_TYPE_SELL, "USDCAD", num*0.01, 1.33800, 1.33820))
 #settings.simulate_prices_from_data()
 
 """settings.calcule_profit(
